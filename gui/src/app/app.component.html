@@ -1,3 +1,13 @@
-<h1>Humidity = {{humidity | number: '2.2-3' }}%</h1>
-<h1>Temperature = {{temperature | number: '2.2-3' }} F</h1>
+<h1>Maker Space ABE 3078</h1>
+<hr>
+<h2>Humidity = {{humidity | number: '2.2-3' }}%</h2>
+<h2>Temperature = {{temperature | number: '2.2-3' }} F</h2>
+<h3>Last Update {{timestamp | date:'medium'}}</h3>
+<p>Note: This is receiving time on the client side a.k.a. your browser</p>
+<hr>
+<p>This is a project of Purdue Digital Agriculture Club.
+The source code of this demo project is 
+<a href="https://github.com/DAC-Of-Purdue/IoT-playground">here</a>
+</p>
+
 <router-outlet></router-outlet>

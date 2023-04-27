@@ -40,7 +40,7 @@ void loop() {
 	Serial.printf("This chip has %d cores\n", ESP.getChipCores());
   Serial.printf("Chip ID: %x\n", chipId);
   
-	delay(3000);
+	delay(10000); // Update 10 seconds
   float h = dht.readHumidity();
   float t = dht.readTemperature(true);
 

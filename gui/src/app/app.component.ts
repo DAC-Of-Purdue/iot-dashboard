@@ -13,6 +13,7 @@ export class AppComponent implements OnDestroy{
   public humidity!: string;
   private temperatureTopic!: Subscription;
   public temperature!: string;
+  public timestamp = new Date();
 
   constructor(private _mqttService: MqttService) { 
     this.humidityTopic = this._mqttService.observe(
@@ -20,6 +21,7 @@ export class AppComponent implements OnDestroy{
     ).subscribe((message: IMqttMessage) => {
       this.humidity = message.payload.toString();
       console.log(this.humidity);
+      this.timestamp = new Date()
     });
     this.temperatureTopic = this._mqttService.observe(
       'purdue-dac/telemetry/temperature'
