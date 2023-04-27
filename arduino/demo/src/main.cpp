@@ -8,10 +8,10 @@
 uint32_t chipId = 0;
 
 EspMQTTClient client(
-  "WifiSSID",
-  "WifiPassword",
+  "DigitalAGClub", // WiFi SSID at the maker space
+  "username", // WiFi password
   "66.253.158.154",  // MQTT Broker server ip
-  "DAC"      // Client name that uniquely identify your device
+  "DAC" // Client name that uniquely identify your device
 );
 
 DHT dht(DHTPIN, DHTTYPE);
@@ -35,9 +35,10 @@ void loop() {
 	  chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
 	}
 
-	Serial.printf("ESP32 Chip model = %s Rev %d\n", ESP.getChipModel(), ESP.getChipRevision());
+	Serial.printf("\nESP32 Chip model = %s Rev %d\n", 
+    ESP.getChipModel(), ESP.getChipRevision());
 	Serial.printf("This chip has %d cores\n", ESP.getChipCores());
-  Serial.print("Chip ID: "); Serial.println(chipId);
+  Serial.printf("Chip ID: %x\n", chipId);
   
 	delay(3000);
   float h = dht.readHumidity();
@@ -52,7 +53,7 @@ void loop() {
 
   client.loop();
   sprintf(payload, "%f", h);
-  client.publish("purdue-dac/telemetry/huminity", payload);
+  client.publish("purdue-dac/telemetry/humidity", payload, true);
   sprintf(payload, "%f", t);
-  client.publish("purdue-dac/telemetry/temperature", payload);
+  client.publish("purdue-dac/telemetry/temperature", payload, true);
 }

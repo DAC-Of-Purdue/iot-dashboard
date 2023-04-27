@@ -16,7 +16,7 @@ export class AppComponent implements OnDestroy{
 
   constructor(private _mqttService: MqttService) { 
     this.humidityTopic = this._mqttService.observe(
-      'purdue-dac/telemetry/huminity'
+      'purdue-dac/telemetry/humidity'
     ).subscribe((message: IMqttMessage) => {
       this.humidity = message.payload.toString();
       console.log(this.humidity);
@@ -25,7 +25,7 @@ export class AppComponent implements OnDestroy{
       'purdue-dac/telemetry/temperature'
     ).subscribe((message: IMqttMessage) => {
       this.temperature = message.payload.toString()
-      console.log(this.temperature)
+      console.log(this.temperature);
     })
   }
 
