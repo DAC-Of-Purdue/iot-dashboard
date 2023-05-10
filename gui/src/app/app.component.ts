@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Subscription } from 'rxjs';
-import { EChartsOption } from 'echarts';
+import { EChartsOption, ECharts } from 'echarts';
 
 @Component({
   selector: 'app-root',
@@ -15,16 +15,14 @@ export class AppComponent implements OnDestroy{
   private temperatureTopic!: Subscription;
   public temperature!: string;
   public timestamp = new Date();
-  
-  gaugeChart: EChartsOption = {
+  public gaugeInstance!: ECharts;
+  public gaugeOption: EChartsOption = {
     series: [
       {
         type: 'gauge',
         center: ['50%', '60%'],
-        startAngle: 200,
-        endAngle: -20,
-        min: 0,
-        max: 60,
+        min: 40,
+        max: 100,
         splitNumber: 12,
         itemStyle: {
           color: '#FFAB91'
@@ -33,7 +31,6 @@ export class AppComponent implements OnDestroy{
           show: true,
           width: 30
         },
-  
         pointer: {
           show: false
         },
@@ -66,66 +63,18 @@ export class AppComponent implements OnDestroy{
         anchor: {
           show: false
         },
-        title: {
-          show: false
-        },
         detail: {
           valueAnimation: true,
           width: '60%',
           lineHeight: 40,
           borderRadius: 8,
           offsetCenter: [0, '-15%'],
-          fontSize: 60,
+          fontSize: 40,
           fontWeight: 'bolder',
-          formatter: '{value} °C',
+          formatter: '{value} °F',
           color: 'inherit'
         },
-        data: [
-          {
-            value: 20
-          }
-        ]
       },
-  
-      {
-        type: 'gauge',
-        center: ['50%', '60%'],
-        startAngle: 200,
-        endAngle: -20,
-        min: 0,
-        max: 60,
-        itemStyle: {
-          color: '#FD7347'
-        },
-        progress: {
-          show: true,
-          width: 8
-        },
-  
-        pointer: {
-          show: false
-        },
-        axisLine: {
-          show: false
-        },
-        axisTick: {
-          show: false
-        },
-        splitLine: {
-          show: false
-        },
-        axisLabel: {
-          show: false
-        },
-        detail: {
-          show: false
-        },
-        data: [
-          {
-            value: 20
-          }
-        ]
-      }
     ],
   };
 
@@ -137,18 +86,26 @@ export class AppComponent implements OnDestroy{
       console.log(this.humidity);
       this.timestamp = new Date()
     });
-    this.temperatureTopic = this._mqttService.observe(
-      'purdue-dac/telemetry/temperature'
-    ).subscribe((message: IMqttMessage) => {
-      this.temperature = message.payload.toString()
-      console.log(this.temperature);
-      
-    })
   }
 
   ngOnDestroy(): void {
     this.humidityTopic.unsubscribe();
     this.temperatureTopic.unsubscribe();
+  }
+
+  onChartInit(ec: ECharts) {
+    this.gaugeInstance = ec;
+    this.temperatureTopic = this._mqttService.observe(
+      'purdue-dac/telemetry/temperature'
+    ).subscribe((message: IMqttMessage) => {
+      this.temperature = message.payload.toString();
+      console.log(this.temperature);
+      this.gaugeInstance.setOption({
+        series: {
+          data: [parseFloat(this.temperature)]
+        }
+      })
+    });
   }
 
 }
