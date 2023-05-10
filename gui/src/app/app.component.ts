@@ -71,7 +71,9 @@ export class AppComponent implements OnDestroy{
           offsetCenter: [0, '-15%'],
           fontSize: 40,
           fontWeight: 'bolder',
-          formatter: '{value} °F',
+          formatter: (value) => {
+            return value.toFixed(2);
+          },
           color: 'inherit'
         },
       },
