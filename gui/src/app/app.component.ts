@@ -15,7 +15,7 @@ export class AppComponent implements OnDestroy{
   private temperatureTopic!: Subscription;
   public temperature!: string;
   public timestamp = new Date();
-  public gaugeInstance!: ECharts;
+  private gaugeInstance!: ECharts;
   public gaugeOption: EChartsOption = {
     series: [
       {
@@ -72,12 +72,20 @@ export class AppComponent implements OnDestroy{
           fontSize: 40,
           fontWeight: 'bolder',
           formatter: (value) => {
-            return value.toFixed(2);
+            return  `${value.toFixed(2)} °F`;
           },
           color: 'inherit'
         },
       },
     ],
+    title: {
+      text: 'Temperature',
+      left: 'center',
+      textStyle: {
+        fontSize: 25,
+        color: '#FFAB91'
+      }
+    }
   };
 
   constructor(private _mqttService: MqttService) { 
