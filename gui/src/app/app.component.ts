@@ -27,7 +27,7 @@ export class AppComponent implements OnDestroy{
   private temperatureTopic!: Subscription;
   public temperature!: string;
   public timestamp = new Date();
-  private gaugeInstance!: ECharts;
+  private gaugeInstance?: ECharts;
   public gaugeOption: EChartsOption = {
     series: [
       {
@@ -108,6 +108,18 @@ export class AppComponent implements OnDestroy{
       console.log(this.humidity);
       this.timestamp = new Date()
     });
+
+    this.temperatureTopic = this._mqttService.observe(
+      'purdue-dac/telemetry/temperature'
+    ).subscribe((message: IMqttMessage) => {
+      this.temperature = message.payload.toString();
+      console.log(this.temperature);
+      this.gaugeInstance?.setOption({
+        series: {
+          data: [parseFloat(this.temperature)]
+        }
+      })
+    });
   }
 
   ngOnDestroy(): void {
@@ -117,17 +129,6 @@ export class AppComponent implements OnDestroy{
 
   onChartInit(ec: ECharts) {
     this.gaugeInstance = ec;
-    this.temperatureTopic = this._mqttService.observe(
-      'purdue-dac/telemetry/temperature'
-    ).subscribe((message: IMqttMessage) => {
-      this.temperature = message.payload.toString();
-      console.log(this.temperature);
-      this.gaugeInstance.setOption({
-        series: {
-          data: [parseFloat(this.temperature)]
-        }
-      })
-    });
   }
 
 }

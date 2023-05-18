@@ -9,8 +9,6 @@
 The source code of this demo project is 
 <a href="https://github.com/DAC-Of-Purdue/IoT-playground">here</a>
 </p>
-
-<div echarts [options]="gaugeOption" (chartInit)="onChartInit($event)"></div>
 <hr>
-<app-gauge></app-gauge>
+<app-gauge [value]="temperature"></app-gauge>
 <router-outlet></router-outlet>

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges, 
+  OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ECharts, EChartsOption } from 'echarts';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -12,14 +13,18 @@ import { NgxEchartsModule } from 'ngx-echarts';
   ],
   template: `
     <div 
-      echarts [options]="gaugeOption">
+      echarts [options]="gaugeOption"
+      (chartInit)="onChartInit($event)">
     </div>
+    <h1>{{value}}</h1>
   `,
   styles: [
   ]
 })
-export class GaugeComponent {
-  private gaugeInstance!: ECharts;
+export class GaugeComponent implements OnChanges, OnInit {
+  @Input() value!: string;
+
+  private gaugeInstance?: ECharts;
   public gaugeOption: EChartsOption = {
     series: [
       {
@@ -80,6 +85,7 @@ export class GaugeComponent {
           },
           color: 'inherit'
         },
+        data: [parseFloat(this.value)]
       },
     ],
     title: {
@@ -92,6 +98,39 @@ export class GaugeComponent {
     }
   };
 
-  
+  constructor(){
+    console.log(this.value);
+    console.log(this.gaugeInstance);
+  }
+
+  ngOnInit(): void {
+    console.log(this.value);
+    console.log(this.gaugeInstance);
+  }
+
+  ngOnChanges(changes: SimpleChanges){
+    let currentValue = changes['value'].currentValue;
+    console.log(this.gaugeInstance);
+    // this.gaugeInstance?.setOption({
+    //   series: {
+    //     data: [currentValue]
+    //   }
+    // })
+    if (this.gaugeInstance) {
+      this.updateValue(currentValue);
+    }
+  }
+
+  updateValue(value: number) {
+    this.gaugeInstance?.setOption({
+      series: {
+        data: [value]
+      }
+    })
+  }
+
+  onChartInit(ec: ECharts) {
+    this.gaugeInstance = ec;
+  }
 
 }
