@@ -5,6 +5,7 @@ import { EChartsOption, ECharts } from 'echarts';
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { GaugeComponent } from './gauge/gauge.component';
 
 @Component({
     selector: 'app-root',
@@ -15,7 +16,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
       NgxEchartsModule, 
       RouterOutlet, 
       DecimalPipe, 
-      DatePipe
+      DatePipe,
+      GaugeComponent
     ]
 })
 export class AppComponent implements OnDestroy{
