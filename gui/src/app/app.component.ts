@@ -2,11 +2,21 @@ import { Component, OnDestroy } from '@angular/core';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Subscription } from 'rxjs';
 import { EChartsOption, ECharts } from 'echarts';
+import { DecimalPipe, DatePipe } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    standalone: true,
+    imports: [
+      NgxEchartsModule, 
+      RouterOutlet, 
+      DecimalPipe, 
+      DatePipe
+    ]
 })
 export class AppComponent implements OnDestroy{
   title = 'Boiler Robotics';
