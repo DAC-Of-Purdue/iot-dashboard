@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { EChartsOption } from 'echarts';
 import { GaugeComponent } from './gauge/gauge.component';
 
 @Component({
@@ -27,6 +28,35 @@ export class AppComponent implements OnDestroy{
   private temperatureTopic!: Subscription;
   public temperature!: string;
   public timestamp = new Date();
+
+  public temperatureGaugeOption: EChartsOption = {
+    title: {
+      text: 'Tempearture'
+    },
+    series: {
+      min: 40,
+      max: 100,
+      splitNumber: 12,
+      detail: {
+        formatter: (value) => {
+          return  `${value.toFixed(2)} °F`;
+        },
+      }
+    }
+  }
+
+  public humidityGaugeOption: EChartsOption = {
+    title: {
+      text: 'Humidity'
+    },
+    series: {
+      detail: {
+        formatter: (value) => {
+          return  `${value.toFixed(2)} %`;
+        },
+      }
+    }
+  }
 
   constructor(private _mqttService: MqttService) { 
     this.humidityTopic = this._mqttService.observe(

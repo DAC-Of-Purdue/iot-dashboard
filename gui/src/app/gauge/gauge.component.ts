@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -20,20 +20,18 @@ import { NgxEchartsModule } from 'ngx-echarts';
   styles: [
   ]
 })
-export class GaugeComponent implements OnChanges {
+export class GaugeComponent implements OnChanges, OnInit {
   @Input() value?: string;
   @Input() isData = false;
+  @Input() option!: EChartsOption;
 
   public isLoading = true;
   public gaugeUpdate!: EChartsOption;
-  public gaugeOption: EChartsOption = {
+  public gaugeOption: EChartsOption = { // Default gauge options
     series: [
       {
         type: 'gauge',
         center: ['50%', '60%'],
-        min: 40,
-        max: 100,
-        splitNumber: 12,
         itemStyle: {
           color: '#FFAB91'
         },
@@ -81,30 +79,35 @@ export class GaugeComponent implements OnChanges {
           offsetCenter: [0, '-15%'],
           fontSize: 40,
           fontWeight: 'bolder',
-          formatter: (value) => {
-            return  `${value.toFixed(2)} °F`;
-          },
           color: 'inherit'
         }
       },
     ],
     title: {
-      text: 'Temperature',
       left: 'center',
+      bottom: 60,
       textStyle: {
-        fontSize: 25,
-        color: '#FFAB91'
+        fontSize: 20,
+        color: 'Black'
       }
     }
   };
 
-  ngOnChanges(changes: SimpleChanges){
+  ngOnChanges(changes: SimpleChanges): void {
+    // Update with current value
     let currentValue = changes['value'].currentValue;
     this.gaugeUpdate = {
       series: [{
-        data: [currentValue]
-      }]
+        data: [{
+          value: currentValue,
+        }]
+      }],
     }
+  }
+
+  ngOnInit(): void {
+    // Options that passed from parent component
+    this.gaugeUpdate = this.option;
   }
 
 }

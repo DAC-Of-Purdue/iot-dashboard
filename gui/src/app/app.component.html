@@ -1,7 +1,5 @@
 <h1>Maker Space ABE 3078</h1>
 <hr>
-<h2>Humidity = {{humidity | number: '2.2-3' }}%</h2>
-<h2>Temperature = {{temperature | number: '2.2-3' }} °F</h2>
 <h3>Last Update {{timestamp | date:'medium'}}</h3>
 <p>Note: This is receiving time on the client side a.k.a. your browser</p>
 <hr>
@@ -10,5 +8,15 @@ The source code of this demo project is
 <a href="https://github.com/DAC-Of-Purdue/IoT-playground">here</a>
 </p>
 <hr>
-<app-gauge [value]="temperature" [isData]="isData"></app-gauge>
+<app-gauge 
+    [value]="temperature" 
+    [isData]="isData"
+    [option]="temperatureGaugeOption">
+</app-gauge>
+
+<app-gauge 
+    [value]="humidity" 
+    [isData]="isData"
+    [option]="humidityGaugeOption">
+</app-gauge>
 <router-outlet></router-outlet>
