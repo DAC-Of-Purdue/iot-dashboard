@@ -1,22 +1,21 @@
-<h1>Maker Space ABE 3078</h1>
-<hr>
-<h3>Last Update {{timestamp | date:'medium'}}</h3>
+<div class="font-bold text-center text-4xl">Maker Space ABE 3078</div>
+<hr />
+<h3>Last Update {{ timestamp | date : "medium" }}</h3>
 <p>Note: This is receiving time on the client side a.k.a. your browser</p>
-<hr>
-<p>This is a project of Purdue Digital Agriculture Club.
-The source code of this demo project is 
-<a href="https://github.com/DAC-Of-Purdue/IoT-playground">here</a>
+<hr />
+<p>
+  This is a project of Purdue Digital Agriculture Club. The source code of this
+  demo project is
+  <a href="https://github.com/DAC-Of-Purdue/IoT-playground">here</a>
 </p>
-<hr>
-<app-gauge 
-    [value]="temperature" 
-    [isData]="isData"
-    [option]="temperatureGaugeOption">
+<hr />
+<app-gauge
+  [value]="temperature"
+  [isData]="isData"
+  [option]="temperatureGaugeOption"
+>
 </app-gauge>
 
-<app-gauge 
-    [value]="humidity" 
-    [isData]="isData"
-    [option]="humidityGaugeOption">
+<app-gauge [value]="humidity" [isData]="isData" [option]="humidityGaugeOption">
 </app-gauge>
 <router-outlet></router-outlet>
