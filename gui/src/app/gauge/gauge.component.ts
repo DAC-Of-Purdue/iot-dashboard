@@ -14,7 +14,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
   standalone: true,
   imports: [CommonModule, NgxEchartsModule],
   template: `
-    <div
+    <div class="w-auto justify-center"
       echarts
       [options]="gaugeOption"
       [merge]="gaugeUpdate"
