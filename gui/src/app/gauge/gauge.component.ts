@@ -1,7 +1,6 @@
-import { Component, Input, OnChanges, 
-  OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ECharts, EChartsOption } from 'echarts';
+import { EChartsOption } from 'echarts';
 import { NgxEchartsModule } from 'ngx-echarts';
 
 @Component({
@@ -12,19 +11,21 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NgxEchartsModule
   ],
   template: `
-    <div 
-      echarts [options]="gaugeOption"
-      (chartInit)="onChartInit($event)">
+    <div echarts
+      [options]="gaugeOption"
+      [merge]="gaugeUpdate"
+      [loading]="!isData">
     </div>
-    <h1>{{value}}</h1>
   `,
   styles: [
   ]
 })
-export class GaugeComponent implements OnChanges, OnInit {
-  @Input() value!: string;
+export class GaugeComponent implements OnChanges {
+  @Input() value?: string;
+  @Input() isData = false;
 
-  private gaugeInstance?: ECharts;
+  public isLoading = true;
+  public gaugeUpdate!: EChartsOption;
   public gaugeOption: EChartsOption = {
     series: [
       {
@@ -84,8 +85,7 @@ export class GaugeComponent implements OnChanges, OnInit {
             return  `${value.toFixed(2)} °F`;
           },
           color: 'inherit'
-        },
-        data: [parseFloat(this.value)]
+        }
       },
     ],
     title: {
@@ -98,39 +98,13 @@ export class GaugeComponent implements OnChanges, OnInit {
     }
   };
 
-  constructor(){
-    console.log(this.value);
-    console.log(this.gaugeInstance);
-  }
-
-  ngOnInit(): void {
-    console.log(this.value);
-    console.log(this.gaugeInstance);
-  }
-
   ngOnChanges(changes: SimpleChanges){
     let currentValue = changes['value'].currentValue;
-    console.log(this.gaugeInstance);
-    // this.gaugeInstance?.setOption({
-    //   series: {
-    //     data: [currentValue]
-    //   }
-    // })
-    if (this.gaugeInstance) {
-      this.updateValue(currentValue);
+    this.gaugeUpdate = {
+      series: [{
+        data: [currentValue]
+      }]
     }
-  }
-
-  updateValue(value: number) {
-    this.gaugeInstance?.setOption({
-      series: {
-        data: [value]
-      }
-    })
-  }
-
-  onChartInit(ec: ECharts) {
-    this.gaugeInstance = ec;
   }
 
 }
