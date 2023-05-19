@@ -8,19 +8,19 @@ import { EChartsOption } from 'echarts';
 import { GaugeComponent } from './gauge/gauge.component';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
-    standalone: true,
-    imports: [
-      NgxEchartsModule, 
-      RouterOutlet, 
-      DecimalPipe, 
-      DatePipe,
-      GaugeComponent
-    ]
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  standalone: true,
+  imports: [
+    NgxEchartsModule,
+    RouterOutlet,
+    DecimalPipe,
+    DatePipe,
+    GaugeComponent,
+  ],
 })
-export class AppComponent implements OnDestroy{
+export class AppComponent implements OnDestroy {
   title = 'Boiler Robotics';
   public isData = false;
   private humidityTopic!: Subscription;
@@ -31,7 +31,7 @@ export class AppComponent implements OnDestroy{
 
   public temperatureGaugeOption: EChartsOption = {
     title: {
-      text: 'Tempearture'
+      text: 'Tempearture',
     },
     series: {
       min: 40,
@@ -39,39 +39,39 @@ export class AppComponent implements OnDestroy{
       splitNumber: 12,
       detail: {
         formatter: (value) => {
-          return  `${value.toFixed(2)} °F`;
+          return `${value.toFixed(2)} °F`;
         },
-      }
-    }
-  }
+      },
+    },
+  };
 
   public humidityGaugeOption: EChartsOption = {
     title: {
-      text: 'Humidity'
+      text: 'Humidity',
     },
     series: {
       detail: {
         formatter: (value) => {
-          return  `${value.toFixed(2)} %`;
+          return `${value.toFixed(2)} %`;
         },
-      }
-    }
-  }
+      },
+    },
+  };
 
-  constructor(private _mqttService: MqttService) { 
-    this.humidityTopic = this._mqttService.observe(
-      'purdue-dac/telemetry/humidity'
-    ).subscribe((message: IMqttMessage) => {
-      this.humidity = message.payload.toString();
-      this.timestamp = new Date()
-    });
+  constructor(private _mqttService: MqttService) {
+    this.humidityTopic = this._mqttService
+      .observe('purdue-dac/telemetry/humidity')
+      .subscribe((message: IMqttMessage) => {
+        this.humidity = message.payload.toString();
+        this.timestamp = new Date();
+      });
 
-    this.temperatureTopic = this._mqttService.observe(
-      'purdue-dac/telemetry/temperature'
-    ).subscribe((message: IMqttMessage) => {
-      this.temperature = message.payload.toString();
-      this.isData = true;
-    });
+    this.temperatureTopic = this._mqttService
+      .observe('purdue-dac/telemetry/temperature')
+      .subscribe((message: IMqttMessage) => {
+        this.temperature = message.payload.toString();
+        this.isData = true;
+      });
   }
 
   ngOnDestroy(): void {
