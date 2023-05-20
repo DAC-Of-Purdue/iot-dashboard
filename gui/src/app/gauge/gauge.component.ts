@@ -14,7 +14,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
   standalone: true,
   imports: [CommonModule, NgxEchartsModule],
   template: `
-    <div class="w-auto justify-center"
+    <div
+      class="w-auto justify-center"
       echarts
       [options]="gaugeOption"
       [merge]="gaugeUpdate"
@@ -27,6 +28,7 @@ export class GaugeComponent implements OnChanges, OnInit {
   @Input() value?: string;
   @Input() isData = false;
   @Input() option!: EChartsOption;
+  @Input() normalRange!: Array<number>;
 
   public isLoading = true;
   public gaugeUpdate!: EChartsOption;
@@ -36,9 +38,6 @@ export class GaugeComponent implements OnChanges, OnInit {
       {
         type: 'gauge',
         center: ['50%', '60%'],
-        itemStyle: {
-          color: '#FFAB91',
-        },
         progress: {
           show: true,
           width: 30,
@@ -56,7 +55,7 @@ export class GaugeComponent implements OnChanges, OnInit {
           splitNumber: 5,
           lineStyle: {
             width: 2,
-            color: '#999',
+            color: 'black',
           },
         },
         splitLine: {
@@ -64,12 +63,12 @@ export class GaugeComponent implements OnChanges, OnInit {
           length: 14,
           lineStyle: {
             width: 3,
-            color: '#999',
+            color: 'black',
           },
         },
         axisLabel: {
           distance: -20,
-          color: '#999',
+          color: 'black',
           fontSize: 20,
         },
         anchor: {
@@ -100,6 +99,13 @@ export class GaugeComponent implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     // Update with current value
     let currentValue = changes['value'].currentValue;
+    console.log(this.normalRange[0]);
+    let color = 'green';
+    if (currentValue < this.normalRange[0]) {
+      color = 'blue';
+    } else if (currentValue > this.normalRange[1]) {
+      color = 'red';
+    }
     this.gaugeUpdate = {
       series: [
         {
@@ -108,6 +114,9 @@ export class GaugeComponent implements OnChanges, OnInit {
               value: currentValue,
             },
           ],
+          itemStyle: {
+            color: color,
+          },
         },
       ],
     };

@@ -14,11 +14,12 @@
     </p>
   </div>
   <hr />
-  <div class="columns-1 lg:columns-2">
+  <div class="columns-1 lg:columns-2 px-1">
     <app-gauge
       [value]="temperature"
       [isData]="isData"
       [option]="temperatureGaugeOption"
+      [normalRange]="[55, 85]"
     >
     </app-gauge>
 
@@ -26,12 +27,15 @@
       [value]="humidity"
       [isData]="isData"
       [option]="humidityGaugeOption"
+      [normalRange]="[20, 80]"
     >
     </app-gauge>
   </div>
   <div class="m-3 text-center">
     <h3 class="text-lg">Last Update: {{ timestamp | date : "medium" }}</h3>
-    <p class="font-light text-sm">Note: This is receiving time on the client side a.k.a. your browser</p>
+    <p class="font-light text-sm">
+      Note: This is receiving time on the client side a.k.a. your browser
+    </p>
   </div>
 
   <router-outlet></router-outlet>
