@@ -31,7 +31,7 @@ export class AppComponent implements OnDestroy {
 
   public temperatureGaugeOption: EChartsOption = {
     title: {
-      text: 'Tempearture',
+      text: 'Temperature',
     },
     series: {
       min: 40,
@@ -47,7 +47,7 @@ export class AppComponent implements OnDestroy {
 
   public humidityGaugeOption: EChartsOption = {
     title: {
-      text: 'Humidity',
+      text: 'Relative\nHumidity',
     },
     series: {
       detail: {
