@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^16.0.0",
     "@angular/router": "^16.0.0",
     "echarts": "^5.4.2",
+    "mqtt-browser": "4.3.7",
     "ngx-echarts": "^15.0.3",
     "ngx-mqtt": "^15.0.0-alpha.1",
     "rxjs": "~7.8.1",

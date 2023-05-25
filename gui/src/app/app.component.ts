@@ -6,6 +6,7 @@ import { RouterOutlet } from '@angular/router';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 import { GaugeComponent } from './gauge/gauge.component';
+import * as mqtt from 'mqtt-browser';
 
 @Component({
   selector: 'app-root',
@@ -72,6 +73,11 @@ export class AppComponent implements OnDestroy {
         this.temperature = message.payload.toString();
         this.isData = true;
       });
+
+    let client: mqtt.MqttClient = mqtt.connect('ws://66.253.158.154:9001/mqtt');
+    client.on('connect', () => {
+      console.log('Connected to the broker!');
+    });
   }
 
   ngOnDestroy(): void {
