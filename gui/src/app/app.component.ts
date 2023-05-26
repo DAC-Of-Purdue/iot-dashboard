@@ -29,6 +29,7 @@ export class AppComponent implements OnDestroy {
   private temperatureTopic!: Subscription;
   public temperature!: string;
   public timestamp = new Date();
+  private client: mqtt.Client = mqtt.connect('ws://66.253.158.154:9001/mqtt');
 
   public temperatureGaugeOption: EChartsOption = {
     title: {
@@ -74,10 +75,21 @@ export class AppComponent implements OnDestroy {
         this.isData = true;
       });
 
-    let client: mqtt.MqttClient = mqtt.connect('ws://66.253.158.154:9001/mqtt');
-    client.on('connect', () => {
+    this.client.on('connect', () => {
       console.log('Connected to the broker!');
+      this.client.subscribe([
+        'purdue-dac/telemetry/temperature',
+        'purdue-dac/telemetry/humidity'
+      ], () => {
+        console.log('Sub completed');
+      })
     });
+
+    this.client.on('message', (topic, payload) => {
+      console.log(topic);
+      console.log(payload.toString());
+    })
+    
   }
 
   ngOnDestroy(): void {
