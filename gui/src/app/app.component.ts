@@ -72,7 +72,6 @@ export class AppComponent implements OnDestroy {
         this.temperature = message.payload.toString();
         this.isData = true;
       });
-    
   }
 
   ngOnDestroy(): void {

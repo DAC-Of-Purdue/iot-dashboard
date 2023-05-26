@@ -99,7 +99,6 @@ export class GaugeComponent implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     // Update with current value
     let currentValue = changes['value'].currentValue;
-    console.log(this.normalRange[0]);
     let color = 'green';
     if (currentValue < this.normalRange[0]) {
       color = 'blue';
