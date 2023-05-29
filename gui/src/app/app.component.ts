@@ -1,12 +1,14 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Subscription } from 'rxjs';
-import { DecimalPipe, DatePipe } from '@angular/common';
+import { DecimalPipe, TitleCasePipe } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 import { GaugeComponent } from './gauge/gauge.component';
 import { Title } from '@angular/platform-browser';
+import { MomentService } from './service/moment.service';
+import { Moment } from 'moment';
 
 @Component({
   selector: 'app-root',
@@ -17,17 +19,19 @@ import { Title } from '@angular/platform-browser';
     NgxEchartsModule,
     RouterOutlet,
     DecimalPipe,
-    DatePipe,
     GaugeComponent,
+    TitleCasePipe,
   ],
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnDestroy, OnInit {
   public isData = false;
-  private humidityTopic!: Subscription;
+  private _humidityTopic!: Subscription;
   public humidity!: string;
-  private temperatureTopic!: Subscription;
+  private _temperatureTopic!: Subscription;
   public temperature!: string;
-  public timestamp = new Date();
+  private _timeInterval!: Subscription;
+  private timestamp!: Moment;
+  public lastUpdate: string = 'updating...';
 
   public temperatureGaugeOption: EChartsOption = {
     title: {
@@ -58,25 +62,38 @@ export class AppComponent implements OnDestroy {
     },
   };
 
-  constructor(private _mqttService: MqttService, private titleService: Title) {
-    this.titleService.setTitle('Digital AG Sensor Dashboard');
-    this.humidityTopic = this._mqttService
+  constructor(
+    private _mqttService: MqttService,
+    private _titleService: Title,
+    private _momentService: MomentService
+  ) {
+    this._titleService.setTitle('Digital AG Sensor Dashboard');
+    this.timestamp = this._momentService.getCurrentTime();
+    this._humidityTopic = this._mqttService
       .observe('purdue-dac/telemetry/humidity')
       .subscribe((message: IMqttMessage) => {
         this.humidity = message.payload.toString();
-        this.timestamp = new Date();
+        this.timestamp = this._momentService.getCurrentTime();
       });
 
-    this.temperatureTopic = this._mqttService
+    this._temperatureTopic = this._mqttService
       .observe('purdue-dac/telemetry/temperature')
       .subscribe((message: IMqttMessage) => {
         this.temperature = message.payload.toString();
         this.isData = true;
       });
   }
+  ngOnInit(): void {
+    this._timeInterval = this._momentService
+      .setIntervalSecond(10)
+      .subscribe(() => {
+        this.lastUpdate = this.timestamp.fromNow();
+      });
+  }
 
   ngOnDestroy(): void {
-    this.humidityTopic.unsubscribe();
-    this.temperatureTopic.unsubscribe();
+    this._humidityTopic.unsubscribe();
+    this._temperatureTopic.unsubscribe();
+    this._timeInterval.unsubscribe();
   }
 }
