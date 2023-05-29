@@ -6,6 +6,7 @@ import { RouterOutlet } from '@angular/router';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 import { GaugeComponent } from './gauge/gauge.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,6 @@ import { GaugeComponent } from './gauge/gauge.component';
   ],
 })
 export class AppComponent implements OnDestroy {
-  title = 'Boiler Robotics';
   public isData = false;
   private humidityTopic!: Subscription;
   public humidity!: string;
@@ -58,7 +58,8 @@ export class AppComponent implements OnDestroy {
     },
   };
 
-  constructor(private _mqttService: MqttService) {
+  constructor(private _mqttService: MqttService, private titleService: Title) {
+    this.titleService.setTitle('Digital AG Sensor Dashboard');
     this.humidityTopic = this._mqttService
       .observe('purdue-dac/telemetry/humidity')
       .subscribe((message: IMqttMessage) => {
