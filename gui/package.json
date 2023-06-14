@@ -20,7 +20,7 @@
     "@angular/router": "^16.0.3",
     "echarts": "^5.4.2",
     "moment": "^2.29.4",
-    "ngx-echarts": "^15.0.3",
+    "ngx-echarts": "^16.0.0",
     "ngx-mqtt": "^16.0.0",
     "rxjs": "~7.8.1",
     "tslib": "^2.3.0",
