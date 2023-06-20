@@ -15,5 +15,4 @@ export class MomentService {
   setIntervalSecond(second: number) {
     return interval(second * 1000);
   }
-
 }

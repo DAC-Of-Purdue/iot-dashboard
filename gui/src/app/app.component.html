@@ -14,29 +14,6 @@
     </p>
   </div>
   <hr />
-  <div class="columns-1 lg:columns-2 px-1">
-    <app-gauge
-      [value]="temperature"
-      [isData]="isData"
-      [option]="temperatureGaugeOption"
-      [normalRange]="[55, 85]"
-    >
-    </app-gauge>
-
-    <app-gauge
-      [value]="humidity"
-      [isData]="isData"
-      [option]="humidityGaugeOption"
-      [normalRange]="[20, 80]"
-    >
-    </app-gauge>
-  </div>
-  <div class="m-3 text-center">
-    <h3 class="text-lg">Last Update: {{ lastUpdate | titlecase }}</h3>
-    <p class="font-light text-sm">
-      Note: This is receiving time on the client side a.k.a. your browser
-    </p>
-  </div>
-
+  <app-dht-gauge></app-dht-gauge>
   <router-outlet></router-outlet>
 </div>
