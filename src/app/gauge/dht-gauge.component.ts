@@ -31,7 +31,6 @@ import { EChartsOption } from 'echarts';
     <div class="m-3 text-center">
       <h3 class="text-lg">Last Update: {{ lastUpdate | titlecase }}</h3>
       <p class="font-light text-sm">
-        Note: This is receiving time on the client side a.k.a. your browser
       </p>
     </div>
   `,
@@ -40,9 +39,8 @@ import { EChartsOption } from 'echarts';
 })
 export class DhtGaugeComponent {
   public isData = false;
-  private _humidityTopic!: Subscription;
+  private _dhtTopic!: Subscription;
   public humidity!: string;
-  private _temperatureTopic!: Subscription;
   public temperature!: string;
   private _timeInterval!: Subscription;
   private timestamp!: Moment;
@@ -81,18 +79,20 @@ export class DhtGaugeComponent {
     private _mqttService: MqttService,
     private _momentService: MomentService
   ) {
-    this._humidityTopic = this._mqttService
-      .observe('purdue-dac/telemetry/humidity')
+    this._dhtTopic = this._mqttService
+      .observe('purdue-dac/3078-outside')
       .subscribe((message: IMqttMessage) => {
-        this.humidity = message.payload.toString();
-        this.timestamp = this._momentService.getCurrentTime();
-      });
-
-    this._temperatureTopic = this._mqttService
-      .observe('purdue-dac/telemetry/temperature')
-      .subscribe((message: IMqttMessage) => {
-        this.temperature = message.payload.toString();
-        this.isData = true;
+        let payload = message.payload.toString();
+        console.log(message.topic + ' -> ' + payload);
+        let regexp = new RegExp('(.*):(.*):(.*)');
+        if (regexp.test(payload)) {
+          // to validate that payload is legit
+          let data = regexp.exec(payload);
+          this.temperature = data![1];
+          this.humidity = data![2];
+          this.timestamp = this._momentService.fromEpoch(Number(data![3]));
+          this.isData = true;
+        }
       });
   }
 
@@ -105,8 +105,7 @@ export class DhtGaugeComponent {
   }
 
   ngOnDestroy(): void {
-    this._humidityTopic.unsubscribe();
-    this._temperatureTopic.unsubscribe();
     this._timeInterval.unsubscribe();
+    this._dhtTopic.unsubscribe();
   }
 }

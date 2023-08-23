@@ -8,8 +8,8 @@ import { interval } from 'rxjs';
 export class MomentService {
   constructor() {}
 
-  getCurrentTime() {
-    return moment.utc();
+  fromEpoch(epoch: number){
+    return moment.unix(epoch);
   }
 
   setIntervalSecond(second: number) {
