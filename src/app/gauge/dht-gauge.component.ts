@@ -30,8 +30,6 @@ import { EChartsOption } from 'echarts';
     </div>
     <div class="m-3 text-center">
       <h3 class="text-lg">Last Update: {{ lastUpdate | titlecase }}</h3>
-      <p class="font-light text-sm">
-      </p>
     </div>
   `,
   styles: [],
@@ -108,4 +106,11 @@ export class DhtGaugeComponent {
     this._timeInterval.unsubscribe();
     this._dhtTopic.unsubscribe();
   }
+}
+
+export interface DhtDataInterface {
+  deviceName: string;
+  timestamp: number;
+  temperature: number;
+  humidity: number;
 }
