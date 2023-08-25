@@ -29,7 +29,8 @@ import { EChartsOption } from 'echarts';
       </app-gauge>
     </div>
     <div class="m-3 text-center">
-      <h3 class="text-lg">Last Update: {{ lastUpdate | titlecase }}</h3>
+      <h3 *ngIf="lastUpdate" class="text-lg">Last Update: {{ lastUpdate | titlecase }}</h3>
+      <h3 *ngIf="!lastUpdate" class="text-lg">Updating ....</h3>
     </div>
   `,
   styles: [],
@@ -42,7 +43,7 @@ export class DhtGaugeComponent {
   public temperature!: string;
   private _timeInterval!: Subscription;
   private timestamp!: Moment;
-  public lastUpdate: string = 'updating...';
+  public lastUpdate?: string;
 
   public temperatureGaugeOption: EChartsOption = {
     title: {
@@ -112,5 +113,5 @@ export interface DhtDataInterface {
   deviceName: string;
   timestamp: number;
   temperature: number;
-  humidity: number;
+  humidity: number | string;
 }
