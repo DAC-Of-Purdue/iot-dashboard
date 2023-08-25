@@ -20,15 +20,17 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
       </ng-container>
       <ng-container matColumnDef="timestamp">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Timestamp</th>
-        <td mat-cell *matCellDef="let row">{{ row.timestamp }}</td>
+        <td mat-cell *matCellDef="let row">
+          {{ row.timestamp * 1000 | date : 'medium' }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="temperature">
         <th mat-header-cell *matHeaderCellDef>Temperature</th>
-        <td mat-cell *matCellDef="let row">{{ row.temperature }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.temperature | number: '.1'}}°F</td>
       </ng-container>
       <ng-container matColumnDef="humidity">
         <th mat-header-cell *matHeaderCellDef>Humidity</th>
-        <td mat-cell *matCellDef="let row">{{ row.humidity }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.humidity | number: '.1'}}%</td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -47,6 +49,7 @@ export class RealtimeComponent {
     'humidity',
   ];
   public dataMQTT: DhtDataInterface[] = [];
+  public dataLatest: DhtDataInterface[] = [];
   public datasource: MatTableDataSource<DhtDataInterface> =
     new MatTableDataSource();
 
@@ -61,13 +64,21 @@ export class RealtimeComponent {
         let regexpPayload = new RegExp('(.*):(.*):(.*)');
         if (regexpTopic.test(topic) && regexpPayload.test(payload)) {
           let rawData = regexpPayload.exec(payload);
-          this.dataMQTT.push({
+          let newData = {
             deviceName: regexpTopic.exec(topic)![1],
             timestamp: Number(rawData![3]),
             temperature: Number(rawData![1]),
             humidity: Number(rawData![2]),
-          });
-          this.datasource.data = this.dataMQTT;
+          };
+          let indexDuplicate = this.dataMQTT.findIndex(device => device.deviceName === newData.deviceName);
+          if (indexDuplicate !== -1) {
+            this.dataLatest[indexDuplicate] = newData;
+          }
+          else {
+            this.dataLatest.push(newData);
+          }
+          this.dataMQTT.push(newData);
+          this.datasource.data = this.dataLatest;
         }
       });
   }
