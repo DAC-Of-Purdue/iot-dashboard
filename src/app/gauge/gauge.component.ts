@@ -25,7 +25,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
   styles: [],
 })
 export class GaugeComponent implements OnChanges, OnInit {
-  @Input() value?: string;
+  @Input() value?: number;
   @Input() isData = false;
   @Input() option!: EChartsOption;
   @Input() normalRange!: Array<number>;
@@ -98,7 +98,7 @@ export class GaugeComponent implements OnChanges, OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     // Update with current value
-    let currentValue = changes['value'].currentValue;
+    let currentValue: number = changes['value'].currentValue;
     let color = 'green';
     if (currentValue < this.normalRange[0]) {
       color = 'blue';

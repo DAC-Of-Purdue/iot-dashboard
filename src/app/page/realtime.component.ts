@@ -12,7 +12,12 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
   selector: 'app-realtime',
   standalone: true,
   template: `
-    <app-dht-gauge></app-dht-gauge>
+    <app-dht-gauge
+      [timestamp]="timestamp"
+      [temperature]="temperature"
+      [humidity]="humidity"
+      [isData]="isData"
+    ></app-dht-gauge>
     <table mat-table [dataSource]="datasource">
       <ng-container matColumnDef="deviceName">
         <th mat-header-cell *matHeaderCellDef>Device Name</th>
@@ -26,18 +31,27 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
       </ng-container>
       <ng-container matColumnDef="temperature">
         <th mat-header-cell *matHeaderCellDef>Temperature</th>
-        <td mat-cell *matCellDef="let row">{{ row.temperature | number: '.1'}}°F</td>
+        <td mat-cell *matCellDef="let row">
+          {{ row.temperature | number : '.1' }}°F
+        </td>
       </ng-container>
       <ng-container matColumnDef="humidity">
         <th mat-header-cell *matHeaderCellDef>Humidity</th>
-        <td mat-cell *matCellDef="let row">{{ row.humidity | number: '.1'}}%</td>
+        <td mat-cell *matCellDef="let row">
+          {{ row.humidity | number : '.1' }}%s
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="mat-row"
+        (click)="selectSensor(row)"
+      ></tr>
     </table>
   `,
-  styles: [],
+  styles: ['.mat-row:hover { background-color: #dee0e3; }'],
   imports: [CommonModule, DhtGaugeComponent, MatTableModule],
 })
 export class RealtimeComponent {
@@ -52,6 +66,10 @@ export class RealtimeComponent {
   public dataLatest: DhtDataInterface[] = [];
   public datasource: MatTableDataSource<DhtDataInterface> =
     new MatTableDataSource();
+  public timestamp?: number;
+  public temperature?: number;
+  public humidity?: number;
+  public isData: boolean = false;
 
   constructor(private _mqttService: MqttService) {
     this._subscrition = this._mqttService
@@ -70,11 +88,12 @@ export class RealtimeComponent {
             temperature: Number(rawData![1]),
             humidity: Number(rawData![2]),
           };
-          let indexDuplicate = this.dataMQTT.findIndex(device => device.deviceName === newData.deviceName);
+          let indexDuplicate = this.dataMQTT.findIndex(
+            (device) => device.deviceName === newData.deviceName
+          );
           if (indexDuplicate !== -1) {
             this.dataLatest[indexDuplicate] = newData;
-          }
-          else {
+          } else {
             this.dataLatest.push(newData);
           }
           this.dataMQTT.push(newData);
@@ -85,5 +104,12 @@ export class RealtimeComponent {
 
   ngOnDestroy(): void {
     this._subscrition.unsubscribe();
+  }
+
+  selectSensor(row: DhtDataInterface): void {
+    this.isData = true;
+    this.temperature = row.temperature;
+    this.humidity = row.humidity;
+    this.timestamp = row.timestamp;
   }
 }

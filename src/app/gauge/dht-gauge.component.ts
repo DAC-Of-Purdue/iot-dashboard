@@ -1,9 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { MomentService } from '../service/moment.service';
 import { Subscription } from 'rxjs';
-import { Moment } from 'moment';
 import { GaugeComponent } from './gauge.component';
 import { EChartsOption } from 'echarts';
 
@@ -19,7 +17,6 @@ import { EChartsOption } from 'echarts';
         [normalRange]="[55, 85]"
       >
       </app-gauge>
-
       <app-gauge
         [value]="humidity"
         [isData]="isData"
@@ -29,20 +26,27 @@ import { EChartsOption } from 'echarts';
       </app-gauge>
     </div>
     <div class="m-3 text-center">
-      <h3 *ngIf="lastUpdate" class="text-lg">Last Update: {{ lastUpdate | titlecase }}</h3>
+      <h3 *ngIf="lastUpdate" class="text-lg">
+        Last Update: {{ lastUpdate | titlecase }}
+      </h3>
       <h3 *ngIf="!lastUpdate" class="text-lg">Updating ....</h3>
+    </div>
+    <div class="m-3 text-center" *ngIf="!isData">
+      <h2 class="text-3xl text-red-600">
+        Click on the table below to select sensor to be displayed
+      </h2>
     </div>
   `,
   styles: [],
   imports: [CommonModule, GaugeComponent],
 })
 export class DhtGaugeComponent {
-  public isData = false;
-  private _dhtTopic!: Subscription;
-  public humidity!: string;
-  public temperature!: string;
+  @Input() timestamp?: number;
+  @Input() temperature?: number;
+  @Input() humidity?: number;
+  @Input() isData = false;
+
   private _timeInterval!: Subscription;
-  private timestamp!: Moment;
   public lastUpdate?: string;
 
   public temperatureGaugeOption: EChartsOption = {
@@ -74,38 +78,22 @@ export class DhtGaugeComponent {
     },
   };
 
-  constructor(
-    private _mqttService: MqttService,
-    private _momentService: MomentService
-  ) {
-    this._dhtTopic = this._mqttService
-      .observe('purdue-dac/3078-outside')
-      .subscribe((message: IMqttMessage) => {
-        let payload = message.payload.toString();
-        console.log(message.topic + ' -> ' + payload);
-        let regexp = new RegExp('(.*):(.*):(.*)');
-        if (regexp.test(payload)) {
-          // to validate that payload is legit
-          let data = regexp.exec(payload);
-          this.temperature = data![1];
-          this.humidity = data![2];
-          this.timestamp = this._momentService.fromEpoch(Number(data![3]));
-          this.isData = true;
-        }
-      });
-  }
+  constructor(private _momentService: MomentService) {}
 
   ngOnInit(): void {
     this._timeInterval = this._momentService
       .setIntervalSecond(10)
       .subscribe(() => {
-        this.lastUpdate = this.timestamp.fromNow();
+        if (this.isData) {
+          this.lastUpdate = this._momentService
+            .fromEpoch(this.timestamp!)
+            .fromNow();
+        }
       });
   }
 
   ngOnDestroy(): void {
     this._timeInterval.unsubscribe();
-    this._dhtTopic.unsubscribe();
   }
 }
 
@@ -113,5 +101,5 @@ export interface DhtDataInterface {
   deviceName: string;
   timestamp: number;
   temperature: number;
-  humidity: number | string;
+  humidity: number;
 }
