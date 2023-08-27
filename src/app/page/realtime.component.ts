@@ -17,6 +17,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
       [temperature]="temperature"
       [humidity]="humidity"
       [isData]="isData"
+      [sensorNane]="selecedSensor"
     ></app-dht-gauge>
     <table mat-table [dataSource]="datasource">
       <ng-container matColumnDef="deviceName">
@@ -70,7 +71,7 @@ export class RealtimeComponent {
   public temperature?: number;
   public humidity?: number;
   public isData: boolean = false;
-  private selecedSensor?: string;
+  public selecedSensor?: string;
 
   constructor(private _mqttService: MqttService) {
     this._subscrition = this._mqttService

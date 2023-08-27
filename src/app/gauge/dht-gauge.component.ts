@@ -9,6 +9,11 @@ import { EChartsOption } from 'echarts';
   selector: 'app-dht-gauge',
   standalone: true,
   template: `
+    <div class="m-3 text-center" *ngIf="isData">
+      <h2 class="text-3xl">
+        {{ sensorNane?.replaceAll('-', ' ') | titlecase }}
+      </h2>
+    </div>
     <div class="columns-1 lg:columns-2 px-1">
       <app-gauge
         [value]="temperature"
@@ -45,6 +50,7 @@ export class DhtGaugeComponent {
   @Input() temperature?: number;
   @Input() humidity?: number;
   @Input() isData = false;
+  @Input() sensorNane?: string;
 
   private _timeInterval!: Subscription;
   public lastUpdate?: string;
