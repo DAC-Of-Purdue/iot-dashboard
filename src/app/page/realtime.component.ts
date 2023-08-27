@@ -38,7 +38,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
       <ng-container matColumnDef="humidity">
         <th mat-header-cell *matHeaderCellDef>Humidity</th>
         <td mat-cell *matCellDef="let row">
-          {{ row.humidity | number : '.1' }}%s
+          {{ row.humidity | number : '.1' }}%
         </td>
       </ng-container>
 
@@ -62,7 +62,7 @@ export class RealtimeComponent {
     'temperature',
     'humidity',
   ];
-  public dataMQTT: DhtDataInterface[] = [];
+
   public dataLatest: DhtDataInterface[] = [];
   public datasource: MatTableDataSource<DhtDataInterface> =
     new MatTableDataSource();
@@ -70,6 +70,7 @@ export class RealtimeComponent {
   public temperature?: number;
   public humidity?: number;
   public isData: boolean = false;
+  private selecedSensor?: string;
 
   constructor(private _mqttService: MqttService) {
     this._subscrition = this._mqttService
@@ -88,15 +89,21 @@ export class RealtimeComponent {
             temperature: Number(rawData![1]),
             humidity: Number(rawData![2]),
           };
-          let indexDuplicate = this.dataMQTT.findIndex(
+          let indexDuplicate = this.dataLatest.findIndex(
             (device) => device.deviceName === newData.deviceName
           );
+          // Replace duplicated data
           if (indexDuplicate !== -1) {
             this.dataLatest[indexDuplicate] = newData;
+            // Update chart if the sensor is selected
+            if (this.selecedSensor === newData.deviceName) {
+              this.temperature = newData.temperature;
+              this.humidity = newData.humidity;
+              this.timestamp = newData.timestamp;
+            }
           } else {
             this.dataLatest.push(newData);
           }
-          this.dataMQTT.push(newData);
           this.datasource.data = this.dataLatest;
         }
       });
@@ -107,6 +114,7 @@ export class RealtimeComponent {
   }
 
   selectSensor(row: DhtDataInterface): void {
+    this.selecedSensor = row.deviceName;
     this.isData = true;
     this.temperature = row.temperature;
     this.humidity = row.humidity;
