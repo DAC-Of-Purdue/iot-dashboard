@@ -4,6 +4,7 @@ import { MomentService } from '../service/moment.service';
 import { Subscription } from 'rxjs';
 import { GaugeComponent } from './gauge.component';
 import { EChartsOption } from 'echarts';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dht-gauge',
@@ -11,7 +12,9 @@ import { EChartsOption } from 'echarts';
   template: `
     <div class="m-3 text-center" *ngIf="isData">
       <h2 class="text-3xl">
-        {{ sensorNane?.replaceAll('-', ' ') | titlecase }}
+        <a [routerLink]="['/history', sensorName]">
+          {{ sensorName?.replaceAll('-', ' ') | titlecase }}</a
+        >
       </h2>
     </div>
     <div class="columns-1 lg:columns-2 px-1">
@@ -43,14 +46,14 @@ import { EChartsOption } from 'echarts';
     </div>
   `,
   styles: [],
-  imports: [CommonModule, GaugeComponent],
+  imports: [CommonModule, GaugeComponent, RouterModule],
 })
 export class DhtGaugeComponent {
   @Input() timestamp?: number;
   @Input() temperature?: number;
   @Input() humidity?: number;
   @Input() isData = false;
-  @Input() sensorNane?: string;
+  @Input() sensorName?: string;
 
   private _timeInterval!: Subscription;
   public lastUpdate?: string;

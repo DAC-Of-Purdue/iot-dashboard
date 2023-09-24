@@ -8,7 +8,7 @@ const routes: Routes = [
     path: 'realtime',
     component: RealtimeComponent,
   },
-  { path: 'history', component: HistoryComponent },
+  { path: 'history/:deviceName', component: HistoryComponent },
   {
     path: '**',
     redirectTo: '/realtime',

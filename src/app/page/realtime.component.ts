@@ -17,7 +17,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
       [temperature]="temperature"
       [humidity]="humidity"
       [isData]="isData"
-      [sensorNane]="selecedSensor"
+      [sensorName]="selecedSensor"
     ></app-dht-gauge>
     <table mat-table [dataSource]="datasource">
       <ng-container matColumnDef="deviceName">
