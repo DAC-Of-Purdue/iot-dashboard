@@ -8,7 +8,8 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
   imports: [CommonModule, RouterModule],
   template: `
     <button
-      routerLink="/realtime"
+      [routerLink]="['/realtime']"
+      fragment="{{ this.deviceName }}"
       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
     >
       Real-Time data
@@ -18,11 +19,13 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
   styles: [],
 })
 export class HistoryComponent {
-  constructor(private route: ActivatedRoute) {}
+  public deviceName!: string;
+  constructor(private _route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.route.params.subscribe((params) => {
-      console.log(params);
+    this._route.params.subscribe((params) => {
+      this.deviceName = params['deviceName'];
+      console.log(this.deviceName);
     });
   }
 }

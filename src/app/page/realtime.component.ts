@@ -7,6 +7,7 @@ import {
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Subscription } from 'rxjs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-realtime',
@@ -73,7 +74,12 @@ export class RealtimeComponent {
   public isData: boolean = false;
   public selecedSensor?: string;
 
-  constructor(private _mqttService: MqttService) {
+  constructor(
+    private _mqttService: MqttService,
+    private _route: ActivatedRoute
+  ) {}
+
+  ngOnInit() {
     this._subscrition = this._mqttService
       .observe('purdue-dac/#')
       .subscribe((message: IMqttMessage) => {
@@ -108,6 +114,25 @@ export class RealtimeComponent {
           this.datasource.data = this.dataLatest;
         }
       });
+
+    this._route.fragment.subscribe((deviceName) => {
+      // Get latest device name from history page
+      if (deviceName) {
+        this.selecedSensor = deviceName;
+      }
+    });
+  }
+
+  ngAfterContentChecked() {
+    // Automatically update gauge when return from another page
+    if (this.isData === false) {
+      let selecedSensorData = this.dataLatest.find(
+        (device) => device.deviceName === this.selecedSensor
+      );
+      if (selecedSensorData) {
+        this.selectSensor(selecedSensorData);
+      }
+    }
   }
 
   ngOnDestroy(): void {
