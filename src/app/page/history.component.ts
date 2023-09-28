@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-history',
@@ -20,12 +21,15 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 })
 export class HistoryComponent {
   public deviceName!: string;
-  constructor(private _route: ActivatedRoute) {}
+  constructor(private _route: ActivatedRoute, private _http: HttpClient) {}
 
   ngOnInit() {
     this._route.params.subscribe((params) => {
       this.deviceName = params['deviceName'];
       console.log(this.deviceName);
+    });
+    this._http.get('/history').subscribe((data) => {
+      console.log(data);
     });
   }
 }

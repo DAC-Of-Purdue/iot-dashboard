@@ -17,6 +17,11 @@ import { RouterModule } from '@angular/router';
         >
       </h2>
     </div>
+    <div class="m-3 text-center" *ngIf="!isData">
+      <h2 class="text-3xl text-red-600">
+        Click on the table below to select sensor to be displayed
+      </h2>
+    </div>
     <div class="columns-1 lg:columns-2 px-1">
       <app-gauge
         [value]="temperature"
@@ -38,11 +43,6 @@ import { RouterModule } from '@angular/router';
         Last Update: {{ lastUpdate | titlecase }}
       </h3>
       <h3 *ngIf="!lastUpdate" class="text-lg">Updating ....</h3>
-    </div>
-    <div class="m-3 text-center" *ngIf="!isData">
-      <h2 class="text-3xl text-red-600">
-        Click on the table below to select sensor to be displayed
-      </h2>
     </div>
   `,
   styles: [],
