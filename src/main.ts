@@ -6,7 +6,6 @@ import { MqttModule } from 'ngx-mqtt';
 import { AppRoutingModule } from './app/app-routing.module';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { environment } from './environments/environment';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -16,6 +15,6 @@ bootstrapApplication(AppComponent, {
       HttpClientModule,
       MqttModule.forRoot(MQTT_SERVICE_OPTIONS),
       NgxEchartsModule.forRoot({ echarts: () => import('echarts') })
-    ),
+    ), 
   ],
 }).catch((err) => console.error(err));

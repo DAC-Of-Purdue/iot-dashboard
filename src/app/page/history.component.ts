@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { DhtDataInterface } from '../gauge/dht-gauge.component';
+import { tick } from '@angular/core/testing';
 
 @Component({
   selector: 'app-history',
@@ -21,6 +23,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class HistoryComponent {
   public deviceName!: string;
+  public data!: Array<DataInterface>;
   constructor(private _route: ActivatedRoute, private _http: HttpClient) {}
 
   ngOnInit() {
@@ -28,8 +31,14 @@ export class HistoryComponent {
       this.deviceName = params['deviceName'];
       console.log(this.deviceName);
     });
-    this._http.get('/history').subscribe((data) => {
-      console.log(data);
+    this._http.get<DataInterface[]>(`http://localhost:8000/history/${this.deviceName}/`).subscribe((response) => {
+      this.data = response;
     });
   }
+}
+
+export interface DataInterface {
+  timestamp: number;
+  temperature: number;
+  humidity: number;
 }
