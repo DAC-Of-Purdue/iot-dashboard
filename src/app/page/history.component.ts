@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { DhtDataInterface } from '../gauge/dht-gauge.component';
-import { tick } from '@angular/core/testing';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { EChartsOption } from 'echarts';
 
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NgxEchartsModule],
   template: `
     <button
       [routerLink]="['/realtime']"
@@ -17,28 +17,55 @@ import { tick } from '@angular/core/testing';
     >
       Real-Time data
     </button>
-    <nav></nav>
+    <div echarts [options]="chartOption"></div>
   `,
   styles: [],
 })
 export class HistoryComponent {
   public deviceName!: string;
-  public data!: Array<DataInterface>;
+  public chartOption!: EChartsOption;
+
   constructor(private _route: ActivatedRoute, private _http: HttpClient) {}
 
   ngOnInit() {
     this._route.params.subscribe((params) => {
       this.deviceName = params['deviceName'];
-      console.log(this.deviceName);
     });
-    this._http.get<DataInterface[]>(`http://localhost:8000/history/${this.deviceName}/`).subscribe((response) => {
-      this.data = response;
-    });
+    this._http
+      .get<DataInterface[]>(
+        `http://10.165.77.242:50005/history/${this.deviceName}`, {
+          params: { 
+            'period': '3d'
+          }
+        }
+      )
+      .subscribe((data) => {
+        console.table(data);
+        this.chartOption = {
+          xAxis: {
+            type: 'time',
+          },
+          yAxis: {
+            type: 'value',
+            name: 'Temperature',
+            axisLabel: {
+              formatter: '{value} °F',
+            },
+          },
+          series: [
+            {
+              data: data.map((record) => [record.time, record.temperature]),
+              type: 'line',
+              smooth: true,
+            },
+          ],
+        };
+      });
   }
 }
 
 export interface DataInterface {
-  timestamp: number;
+  time: string;
   temperature: number;
   humidity: number;
 }
