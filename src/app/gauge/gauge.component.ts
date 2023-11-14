@@ -7,12 +7,12 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EChartsOption } from 'echarts';
-import { NgxEchartsModule } from 'ngx-echarts';
+import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
 
 @Component({
   selector: 'app-gauge',
   standalone: true,
-  imports: [CommonModule, NgxEchartsModule],
+  imports: [CommonModule, NgxEchartsDirective],
   template: `
     <div
       class="w-auto justify-center"
@@ -23,6 +23,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     ></div>
   `,
   styles: [],
+  providers: [provideEcharts()],
 })
 export class GaugeComponent implements OnChanges, OnInit {
   @Input() value?: number;

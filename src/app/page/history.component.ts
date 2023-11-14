@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { NgxEchartsModule } from 'ngx-echarts';
+import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgxEchartsModule],
+  imports: [CommonModule, RouterModule, NgxEchartsDirective],
   template: `
     <button
       [routerLink]="['/realtime']"
@@ -20,6 +20,7 @@ import { EChartsOption } from 'echarts';
     <div echarts [options]="chartOption"></div>
   `,
   styles: [],
+  providers: [provideEcharts()],
 })
 export class HistoryComponent {
   public deviceName!: string;
@@ -33,10 +34,11 @@ export class HistoryComponent {
     });
     this._http
       .get<DataInterface[]>(
-        `http://10.165.77.242:50005/history/${this.deviceName}`, {
-          params: { 
-            'period': '3d'
-          }
+        `http://10.165.77.242:50005/history/${this.deviceName}`,
+        {
+          params: {
+            period: '3d',
+          },
         }
       )
       .subscribe((data) => {
