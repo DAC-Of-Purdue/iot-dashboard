@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-history',
@@ -34,7 +35,7 @@ export class HistoryComponent {
     });
     this._http
       .get<DataInterface[]>(
-        `http://10.165.77.242:50005/history/${this.deviceName}`,
+        `http://${environment.apiUrl}/history/${this.deviceName}`,
         {
           params: {
             period: '3d',
