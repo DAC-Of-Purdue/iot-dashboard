@@ -55,11 +55,19 @@ export class HistoryComponent {
               formatter: '{value} °F',
             },
           },
+          tooltip: {
+            position: 'top',
+            trigger: 'item',
+            formatter: '{c}',
+          }, 
           series: [
             {
               data: data.map((record) => [record.time, record.temperature]),
               type: 'line',
               smooth: true,
+              tooltip: {
+                formatter: '{value} °F'
+              }
             },
           ],
         };
