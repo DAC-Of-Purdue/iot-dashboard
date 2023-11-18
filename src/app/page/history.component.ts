@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Time } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
@@ -56,18 +56,16 @@ export class HistoryComponent {
             },
           },
           tooltip: {
-            position: 'top',
-            trigger: 'item',
-            formatter: '{c}',
-          }, 
+            trigger: 'axis',
+            valueFormatter: (value) => Number(value).toFixed(1) + '°F',
+          },
           series: [
             {
               data: data.map((record) => [record.time, record.temperature]),
               type: 'line',
+              name: 'Temperature',
               smooth: true,
-              tooltip: {
-                formatter: '{value} °F'
-              }
+              showSymbol: false,
             },
           ],
         };
