@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule, Time } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
@@ -38,26 +38,39 @@ export class HistoryComponent {
         `http://${environment.apiUrl}/history/${this.deviceName}`,
         {
           params: {
-            period: '3d',
+            period: '7d',
           },
         }
       )
       .subscribe((data) => {
+        data.forEach((value, index, array) => {
+          array[index].time = new Date(value.time);
+        });
         console.table(data);
         this.chartOption = {
           xAxis: {
             type: 'time',
           },
-          yAxis: {
-            type: 'value',
-            name: 'Temperature',
-            axisLabel: {
-              formatter: '{value} °F',
+          yAxis: [
+            {
+              type: 'value',
+              name: 'Temperature',
+              axisLabel: {
+                formatter: '{value}°F',
+              },
             },
-          },
+            {
+              type: 'value',
+              name: 'Humidity',
+              axisLabel: {
+                formatter: '{value}%',
+              },
+              min: 0,
+              max: 100,
+            },
+          ],
           tooltip: {
             trigger: 'axis',
-            valueFormatter: (value) => Number(value).toFixed(1) + '°F',
           },
           series: [
             {
@@ -66,6 +79,22 @@ export class HistoryComponent {
               name: 'Temperature',
               smooth: true,
               showSymbol: false,
+              tooltip: {
+                valueFormatter: (value) => (value as number).toFixed(1) + '°F',
+              },
+            },
+            {
+              data: data.map((record) => [record.time, record.humidity]),
+              type: 'line',
+              name: 'Humidity',
+              smooth: true,
+              showSymbol: false,
+              yAxisIndex: 1,
+              tooltip: {
+                valueFormatter(value) {
+                  return (value as number).toFixed(1) + '%';
+                },
+              },
             },
           ],
         };
@@ -74,7 +103,7 @@ export class HistoryComponent {
 }
 
 export interface DataInterface {
-  time: string;
+  time: Date | string;
   temperature: number;
   humidity: number;
 }
