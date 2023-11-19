@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { DhtDataInterface } from '../gauge/dht-gauge.component';
-import { tick } from '@angular/core/testing';
+import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
+import { EChartsOption } from 'echarts';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NgxEchartsDirective],
   template: `
     <button
       [routerLink]="['/realtime']"
@@ -17,28 +18,92 @@ import { tick } from '@angular/core/testing';
     >
       Real-Time data
     </button>
-    <nav></nav>
+    <div echarts [options]="chartOption"></div>
   `,
   styles: [],
+  providers: [provideEcharts()],
 })
 export class HistoryComponent {
   public deviceName!: string;
-  public data!: Array<DataInterface>;
+  public chartOption!: EChartsOption;
+
   constructor(private _route: ActivatedRoute, private _http: HttpClient) {}
 
   ngOnInit() {
     this._route.params.subscribe((params) => {
       this.deviceName = params['deviceName'];
-      console.log(this.deviceName);
     });
-    this._http.get<DataInterface[]>(`http://localhost:8000/history/${this.deviceName}/`).subscribe((response) => {
-      this.data = response;
-    });
+    this._http
+      .get<DataInterface[]>(
+        `http://${environment.apiUrl}/history/${this.deviceName}`,
+        {
+          params: {
+            period: '7d',
+          },
+        }
+      )
+      .subscribe((data) => {
+        data.forEach((value, index, array) => {
+          array[index].time = new Date(value.time);
+        });
+        console.table(data);
+        this.chartOption = {
+          xAxis: {
+            type: 'time',
+          },
+          yAxis: [
+            {
+              type: 'value',
+              name: 'Temperature',
+              axisLabel: {
+                formatter: '{value}°F',
+              },
+            },
+            {
+              type: 'value',
+              name: 'Humidity',
+              axisLabel: {
+                formatter: '{value}%',
+              },
+              min: 0,
+              max: 100,
+            },
+          ],
+          tooltip: {
+            trigger: 'axis',
+          },
+          series: [
+            {
+              data: data.map((record) => [record.time, record.temperature]),
+              type: 'line',
+              name: 'Temperature',
+              smooth: true,
+              showSymbol: false,
+              tooltip: {
+                valueFormatter: (value) => (value as number).toFixed(1) + '°F',
+              },
+            },
+            {
+              data: data.map((record) => [record.time, record.humidity]),
+              type: 'line',
+              name: 'Humidity',
+              smooth: true,
+              showSymbol: false,
+              yAxisIndex: 1,
+              tooltip: {
+                valueFormatter(value) {
+                  return (value as number).toFixed(1) + '%';
+                },
+              },
+            },
+          ],
+        };
+      });
   }
 }
 
 export interface DataInterface {
-  timestamp: number;
+  time: Date | string;
   temperature: number;
   humidity: number;
 }
