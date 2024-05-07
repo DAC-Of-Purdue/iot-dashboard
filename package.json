@@ -22,7 +22,7 @@
     "angular-cli-ghpages": "^1.0.6",
     "moment": "^2.29.4",
     "ngx-echarts": "^16.2.0",
-    "ngx-mqtt": "^16.1.0",
+    "mqtt": "^5.5.5",
     "rxjs": "^7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "^0.13.3"

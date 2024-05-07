@@ -4,10 +4,12 @@ import {
   DhtGaugeComponent,
   DhtDataInterface,
 } from '../gauge/dht-gauge.component';
-import { IMqttMessage, MqttService } from 'ngx-mqtt';
+import { environment } from 'src/environments/environment';
 import { Subscription } from 'rxjs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
+
+import mqtt from 'mqtt';
 
 @Component({
   selector: 'app-realtime',
@@ -18,9 +20,9 @@ import { ActivatedRoute } from '@angular/router';
       [temperature]="temperature"
       [humidity]="humidity"
       [isData]="isData"
-      [sensorName]="selecedSensor"
+      [sensorName]="selectedSensor"
     ></app-dht-gauge>
-    <table mat-table [dataSource]="datasource">
+    <table mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="deviceName">
         <th mat-header-cell *matHeaderCellDef>Device Name</th>
         <td mat-cell *matCellDef="let row">{{ row.deviceName }}</td>
@@ -57,7 +59,6 @@ import { ActivatedRoute } from '@angular/router';
   imports: [CommonModule, DhtGaugeComponent, MatTableModule],
 })
 export class RealtimeComponent {
-  private _subscrition!: Subscription;
   public displayedColumns: string[] = [
     'deviceName',
     'timestamp',
@@ -66,59 +67,60 @@ export class RealtimeComponent {
   ];
 
   public dataLatest: DhtDataInterface[] = [];
-  public datasource: MatTableDataSource<DhtDataInterface> =
+  public dataSource: MatTableDataSource<DhtDataInterface> =
     new MatTableDataSource();
   public timestamp?: number;
   public temperature?: number;
   public humidity?: number;
   public isData: boolean = false;
-  public selecedSensor?: string;
+  public selectedSensor?: string;
 
-  constructor(
-    private _mqttService: MqttService,
-    private _route: ActivatedRoute
-  ) {}
+  constructor(private _route: ActivatedRoute) {}
 
   ngOnInit() {
-    this._subscrition = this._mqttService
-      .observe('purdue-dac/#')
-      .subscribe((message: IMqttMessage) => {
-        // extract device name and data
-        let topic = message.topic;
-        let regexpTopic = new RegExp('purdue-dac/(.*)');
-        let payload = message.payload.toString();
-        let regexpPayload = new RegExp('(.*):(.*):(.*)');
-        if (regexpTopic.test(topic) && regexpPayload.test(payload)) {
-          let rawData = regexpPayload.exec(payload);
-          let newData = {
-            deviceName: regexpTopic.exec(topic)![1],
-            timestamp: Number(rawData![3]),
-            temperature: Number(rawData![1]),
-            humidity: Number(rawData![2]),
-          };
-          let indexDuplicate = this.dataLatest.findIndex(
-            (device) => device.deviceName === newData.deviceName
-          );
-          // Replace duplicated data
-          if (indexDuplicate !== -1) {
-            this.dataLatest[indexDuplicate] = newData;
-            // Update chart if the sensor is selected
-            if (this.selecedSensor === newData.deviceName) {
-              this.temperature = newData.temperature;
-              this.humidity = newData.humidity;
-              this.timestamp = newData.timestamp;
-            }
-          } else {
-            this.dataLatest.push(newData);
+    const host = `ws://${environment.brokerUrl}:9001`;
+    console.log('connecting to mqtt broker...');
+    const client = mqtt.connect(host);
+    client.on('connect', () => {
+      console.log('Connected to broker.');
+      client.subscribe('purdue-dac/#');
+    });
+    client.on('message', (topic, message, packet) => {
+      // extract device name and data
+      let regexpTopic = new RegExp('purdue-dac/(.*)');
+      let regexpPayload = new RegExp('(.*):(.*):(.*)');
+      let payload = message.toString();
+      if (regexpTopic.test(topic) && regexpPayload.test(payload)) {
+        let rawData = regexpPayload.exec(payload);
+        let newData = {
+          deviceName: regexpTopic.exec(topic)![1],
+          timestamp: Number(rawData![3]),
+          temperature: Number(rawData![1]),
+          humidity: Number(rawData![2]),
+        };
+        let indexDuplicate = this.dataLatest.findIndex(
+          (device) => device.deviceName === newData.deviceName
+        );
+        // Replace duplicated data
+        if (indexDuplicate !== -1) {
+          this.dataLatest[indexDuplicate] = newData;
+          // Update chart if the sensor is selected
+          if (this.selectedSensor === newData.deviceName) {
+            this.temperature = newData.temperature;
+            this.humidity = newData.humidity;
+            this.timestamp = newData.timestamp;
           }
-          this.datasource.data = this.dataLatest;
+        } else {
+          this.dataLatest.push(newData);
         }
-      });
+        this.dataSource.data = this.dataLatest;
+      }
+    });
 
     this._route.fragment.subscribe((deviceName) => {
       // Get latest device name from history page
       if (deviceName) {
-        this.selecedSensor = deviceName;
+        this.selectedSensor = deviceName;
       }
     });
   }
@@ -126,21 +128,17 @@ export class RealtimeComponent {
   ngAfterContentChecked() {
     // Automatically update gauge when return from another page
     if (this.isData === false) {
-      let selecedSensorData = this.dataLatest.find(
-        (device) => device.deviceName === this.selecedSensor
+      let selectedSensorData = this.dataLatest.find(
+        (device) => device.deviceName === this.selectedSensor
       );
-      if (selecedSensorData) {
-        this.selectSensor(selecedSensorData);
+      if (selectedSensorData) {
+        this.selectSensor(selectedSensorData);
       }
     }
   }
 
-  ngOnDestroy(): void {
-    this._subscrition.unsubscribe();
-  }
-
   selectSensor(row: DhtDataInterface): void {
-    this.selecedSensor = row.deviceName;
+    this.selectedSensor = row.deviceName;
     this.isData = true;
     this.temperature = row.temperature;
     this.humidity = row.humidity;
