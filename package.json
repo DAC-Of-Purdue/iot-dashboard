@@ -20,9 +20,10 @@
     "@angular/platform-browser-dynamic": "^16.2.12",
     "@angular/router": "^16.2.12",
     "angular-cli-ghpages": "^1.0.6",
+    "echarts": "5.5.0",
     "moment": "^2.29.4",
-    "ngx-echarts": "^16.2.0",
     "mqtt": "^5.5.5",
+    "ngx-echarts": "^17.1.0",
     "rxjs": "^7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "^0.13.3"
@@ -40,7 +41,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
     "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.5",
+    "tailwindcss": "^3.4.3",
     "typescript": "~5.1.6"
   }
 }

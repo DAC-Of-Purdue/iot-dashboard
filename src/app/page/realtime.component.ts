@@ -5,7 +5,6 @@ import {
   DhtDataInterface,
 } from '../gauge/dht-gauge.component';
 import { environment } from 'src/environments/environment';
-import { Subscription } from 'rxjs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 
