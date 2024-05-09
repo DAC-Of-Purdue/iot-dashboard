@@ -54,7 +54,7 @@ import mqtt from 'mqtt';
       ></tr>
     </table>
   `,
-  styles: ['.mat-row:hover { background-color: #dee0e3; }'],
+  styles: ['.mat-row:hover { background-color: black; }'],
   imports: [CommonModule, DhtGaugeComponent, MatTableModule],
 })
 export class RealtimeComponent {

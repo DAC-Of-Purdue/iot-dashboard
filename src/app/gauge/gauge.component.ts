@@ -56,7 +56,7 @@ export class GaugeComponent implements OnChanges, OnInit {
           splitNumber: 5,
           lineStyle: {
             width: 2,
-            color: 'black',
+            color: 'white',
           },
         },
         splitLine: {
@@ -64,12 +64,12 @@ export class GaugeComponent implements OnChanges, OnInit {
           length: 14,
           lineStyle: {
             width: 3,
-            color: 'black',
+            color: 'white',
           },
         },
         axisLabel: {
           distance: -20,
-          color: 'black',
+          color: 'white',
           fontSize: 20,
         },
         anchor: {
@@ -92,7 +92,7 @@ export class GaugeComponent implements OnChanges, OnInit {
       bottom: 60,
       textStyle: {
         fontSize: 20,
-        color: 'Black',
+        color: 'white',
       },
     },
   };

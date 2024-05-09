@@ -1,20 +1,19 @@
-<div class="container mx-auto">
-  <div class="font-bold text-center text-4xl m-2">
-    Purdue Digital AG Club
-  </div>
-  <hr />
-  <div class="text-center m-3">
-    <p class="text-xl">
-      This is a project of
-      <span class="font-bold">Purdue Digital Agriculture Club</span>. The source
-      code of this demo project can be found
-      <a
-        href="https://github.com/DAC-Of-Purdue/iot-dashboard"
-        class="text-green-500 hover:font-bold"
-        >here</a
-      >.
-    </p>
-  </div>
-  <hr />
-  <router-outlet></router-outlet>
-</div>
+<mat-sidenav-container fullscreen>
+  <mat-sidenav-content>
+    <div class="font-bold text-center text-4xl m-2">Purdue Digital AG Club</div>
+    <hr />
+    <div class="text-center m-3">
+      <p class="text-xl">
+        This is a project of
+        <span class="font-bold">Purdue Digital Agriculture Club</span>. The
+        source code of this demo project can be found
+        <a
+          href="https://github.com/DAC-Of-Purdue/iot-dashboard"
+          class="text-green-500 hover:font-bold"
+          >here</a
+        >.
+      </p>
+    </div>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

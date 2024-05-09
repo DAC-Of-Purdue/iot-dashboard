@@ -50,20 +50,33 @@ export class HistoryComponent {
         this.chartOption = {
           xAxis: {
             type: 'time',
+            axisLabel: {
+              color: 'white',
+            },
           },
           yAxis: [
             {
               type: 'value',
               name: 'Temperature',
+              nameTextStyle: {
+                color: 'white',
+                fontSize: 18,
+              },
               axisLabel: {
                 formatter: '{value}°F',
+                color: 'white',
               },
             },
             {
               type: 'value',
               name: 'Humidity',
+              nameTextStyle: {
+                color: 'white',
+                fontSize: 18,
+              },
               axisLabel: {
                 formatter: '{value}%',
+                color: 'white',
               },
               min: 0,
               max: 100,
