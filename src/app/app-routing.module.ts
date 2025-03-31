@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'weight', component: WeightComponent },
   {
     path: '**',
-    redirectTo: '/weight',
+    redirectTo: '/realtime',
   },
 ];
 

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { TitleCasePipe } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -9,7 +8,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   standalone: true,
-  imports: [RouterOutlet, TitleCasePipe, MatSidenavModule],
+  imports: [RouterOutlet, MatSidenavModule],
 })
 export class AppComponent {
   constructor(private _titleService: Title) {

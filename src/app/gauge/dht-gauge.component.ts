@@ -9,43 +9,8 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-dht-gauge',
   standalone: true,
-  template: `
-    <div class="m-3 text-center" *ngIf="isData">
-      <h2 class="text-3xl">
-        <a [routerLink]="['/history', sensorName]">
-          {{ sensorName?.replaceAll('-', ' ') | titlecase }}</a
-        >
-      </h2>
-    </div>
-    <div class="m-3 text-center" *ngIf="!isData">
-      <h2 class="text-3xl text-red-600">
-        Click on the table below to select sensor to be displayed
-      </h2>
-    </div>
-    <div class="columns-1 lg:columns-2 px-1">
-      <app-gauge
-        [value]="temperature"
-        [isData]="isData"
-        [option]="temperatureGaugeOption"
-        [normalRange]="[55, 85]"
-      >
-      </app-gauge>
-      <app-gauge
-        [value]="humidity"
-        [isData]="isData"
-        [option]="humidityGaugeOption"
-        [normalRange]="[20, 80]"
-      >
-      </app-gauge>
-    </div>
-    <div class="m-3 text-center">
-      <h3 *ngIf="lastUpdate" class="text-lg">
-        Last Update: {{ lastUpdate | titlecase }}
-      </h3>
-      <h3 *ngIf="!lastUpdate" class="text-lg">Updating ....</h3>
-    </div>
-  `,
-  styles: [],
+  templateUrl: './dht-gauge.component.html',
+  styleUrl: './dht-gauge.component.css',
   imports: [CommonModule, GaugeComponent, RouterModule],
 })
 export class DhtGaugeComponent {

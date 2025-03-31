@@ -13,16 +13,8 @@ import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
   selector: 'app-gauge',
   standalone: true,
   imports: [CommonModule, NgxEchartsDirective],
-  template: `
-    <div
-      class="w-auto justify-center"
-      echarts
-      [options]="gaugeOption"
-      [merge]="gaugeUpdate"
-      [loading]="!isData"
-    ></div>
-  `,
-  styles: [],
+  templateUrl: './gauge.component.html',
+  styleUrl: './gauge.component.css',
   providers: [provideEcharts()],
 })
 export class GaugeComponent implements OnChanges, OnInit {

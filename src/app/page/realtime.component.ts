@@ -13,48 +13,8 @@ import mqtt from 'mqtt';
 @Component({
   selector: 'app-realtime',
   standalone: true,
-  template: `
-    <app-dht-gauge
-      [timestamp]="timestamp"
-      [temperature]="temperature"
-      [humidity]="humidity"
-      [isData]="isData"
-      [sensorName]="selectedSensor"
-    ></app-dht-gauge>
-    <table mat-table [dataSource]="dataSource">
-      <ng-container matColumnDef="deviceName">
-        <th mat-header-cell *matHeaderCellDef>Device Name</th>
-        <td mat-cell *matCellDef="let row">{{ row.deviceName }}</td>
-      </ng-container>
-      <ng-container matColumnDef="timestamp">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Timestamp</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.timestamp * 1000 | date : 'medium' }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="temperature">
-        <th mat-header-cell *matHeaderCellDef>Temperature</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.temperature | number : '.1' }}°F
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="humidity">
-        <th mat-header-cell *matHeaderCellDef>Humidity</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.humidity | number : '.1' }}%
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
-        class="mat-row"
-        (click)="selectSensor(row)"
-      ></tr>
-    </table>
-  `,
-  styles: ['.mat-row:hover { background-color: black; }'],
+  templateUrl: './realtime.component.html',
+  styleUrl: './realtime.component.css',
   imports: [CommonModule, DhtGaugeComponent, MatTableModule],
 })
 export class RealtimeComponent {

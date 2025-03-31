@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: '66.253.158.154:50005',
-  brokerUrl: '66.253.158.154',
+  apiUrl: '164.90.139.114:50005',
+  brokerUrl: '164.90.139.114',
 };

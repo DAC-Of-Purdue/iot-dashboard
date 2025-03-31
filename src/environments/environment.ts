@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'localhost:50005',
-  brokerUrl: 'localhost',
+  apiUrl: '164.90.139.114:50005',
+  brokerUrl: '164.90.139.114',
 };
