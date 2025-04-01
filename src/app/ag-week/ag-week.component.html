@@ -1,6 +1,6 @@
 <div class="m-3 text-center">
   <mat-form-field>
-    <mat-label>Select Sensor</mat-label>
+    <mat-label>Select Pot</mat-label>
     <mat-select (selectionChange)="onSensorChange($event)">
       @for (sensor of sensors; track sensor) {
       <mat-option [value]="sensor">
@@ -10,11 +10,11 @@
     </mat-select>
   </mat-form-field>
 </div>
-@if(selectedSensor) {
+@if(selectedSensor) { @if(selectedSensor.type === 'dht') {
 <app-dht-gauge
   [timestamp]="timestamp"
   [temperature]="temperature"
   [humidity]="humidity"
   [isData]="isData"
 ></app-dht-gauge>
-}
+} }
