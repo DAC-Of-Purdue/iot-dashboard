@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DhtComponent } from './dht.component';
+import { AgWeekComponent } from './ag-week.component';
 
-describe('DhtComponent', () => {
-  let component: DhtComponent;
-  let fixture: ComponentFixture<DhtComponent>;
+describe('AgWeekComponent', () => {
+  let component: AgWeekComponent;
+  let fixture: ComponentFixture<AgWeekComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DhtComponent]
+      imports: [AgWeekComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DhtComponent);
+    fixture = TestBed.createComponent(AgWeekComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
