@@ -52,8 +52,8 @@ export class GaugeComponent implements OnChanges, OnInit {
           },
         },
         splitLine: {
-          distance: -52,
-          length: 14,
+          distance: -40,
+          length: 15,
           lineStyle: {
             width: 3,
             color: 'white',

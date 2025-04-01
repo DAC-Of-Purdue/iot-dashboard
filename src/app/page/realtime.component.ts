@@ -37,18 +37,20 @@ export class RealtimeComponent {
   constructor(private _route: ActivatedRoute) {}
 
   ngOnInit() {
-    const host = `ws://${environment.brokerUrl}:9001`;
+    const host = `wss://${environment.brokerUrl}:8084/mqtt`;
     console.log('connecting to mqtt broker...');
     const client = mqtt.connect(host);
     client.on('connect', () => {
       console.log('Connected to broker.');
       client.subscribe('purdue-dac/#');
     });
-    client.on('message', (topic, message, packet) => {
+    client.on('message', (topic, message, _) => {
       // extract device name and data
       let regexpTopic = new RegExp('purdue-dac/(.*)');
       let regexpPayload = new RegExp('(.*):(.*):(.*)');
       let payload = message.toString();
+      // Debug message
+      // console.log('Received message:', payload);
       if (regexpTopic.test(topic) && regexpPayload.test(payload)) {
         let rawData = regexpPayload.exec(payload);
         let newData = {

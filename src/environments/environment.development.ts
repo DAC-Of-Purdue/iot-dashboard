@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: '164.90.139.114:50005',
-  brokerUrl: '164.90.139.114',
+  apiUrl: 'broker.emqx.io:50005',
+  brokerUrl: 'broker.emqx.io',
 };
