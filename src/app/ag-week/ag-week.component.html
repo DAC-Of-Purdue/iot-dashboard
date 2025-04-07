@@ -1,6 +1,6 @@
 <div class="m-3 text-center">
   <mat-form-field>
-    <mat-label>Select Pot</mat-label>
+    <mat-label>Select Sensor</mat-label>
     <mat-select (selectionChange)="onSensorChange($event)">
       @for (sensor of sensors; track sensor) {
       <mat-option [value]="sensor">
@@ -17,4 +17,12 @@
   [humidity]="humidity"
   [isData]="isData"
 ></app-dht-gauge>
-} }
+} @if(selectedSensor.type === 'soil') {
+<app-gauge
+  [value]="soilMoisture"
+  [isData]="isData"
+  [option]="SoilGaugeOption"
+  [normalRange]="[50, 90]"
+>
+</app-gauge>
+}}

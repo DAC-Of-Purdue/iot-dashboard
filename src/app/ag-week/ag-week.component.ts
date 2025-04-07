@@ -4,7 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule, MatSelectChange } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { EChartsOption } from 'echarts';
 
+import { GaugeComponent } from '../gauge/gauge.component';
 import {
   DhtGaugeComponent,
   DhtDataInterface,
@@ -24,6 +26,7 @@ interface Sensor {
   standalone: true,
   imports: [
     DhtGaugeComponent,
+    GaugeComponent,
     MatFormFieldModule,
     MatSelectModule,
     FormsModule,
@@ -37,25 +40,49 @@ export class AgWeekComponent {
   timestamp?: number;
   temperature?: number;
   humidity?: number;
+  soilMoisture?: number;
   isData: boolean = false;
   selectedSensor?: Sensor;
 
+  public SoilGaugeOption: EChartsOption = {
+    title: {
+      text: 'Soil\nMoisture',
+    },
+    series: {
+      detail: {
+        formatter: (value) => {
+          return `${value.toFixed(1)} %`;
+        },
+      },
+    },
+  };
+
   sensors: Sensor[] = [
     {
-      name: 'Pot 1',
-      topic: 'ag-week-demo-1',
+      name: 'Sensor 1',
+      topic: 'demo-1',
       type: 'dht',
     },
     {
-      name: 'Pot 2',
-      topic: 'ag-week-demo-2',
+      name: 'Sensor 2',
+      topic: 'demo-2',
       type: 'dht',
     },
     {
-      name: 'Pot 3',
-      topic: 'ag-week-demo-3',
-      type: 'soil',
+      name: 'Sensor 3',
+      topic: 'demo-3',
+      type: 'dht',
     },
+    // {
+    //   name: 'Sensor 4',
+    //   topic: 'ag-week-demo-4',
+    //   type: 'soil',
+    // },
+    // {
+    //   name: 'Sensor 5',
+    //   topic: 'ag-week-demo-5',
+    //   type: 'soil',
+    // },
   ];
 
   constructor() {}
@@ -108,6 +135,27 @@ export class AgWeekComponent {
           }
         }
       }
+      if (sensor?.type === 'soil') {
+        let regexpPayload = new RegExp('(.*):(.*)');
+        if (regexpTopic.test(topic) && regexpPayload.test(payload)) {
+          let rawData = regexpPayload.exec(payload);
+          let deviceName = regexpTopic.exec(topic)![1];
+          let soilMoisture = Number(rawData![1]);
+          // update data if topic matches selected sensor
+          if (this.selectedSensor?.topic === deviceName) {
+            this.isData = true;
+            this.soilMoisture = soilMoisture;
+          }
+
+          // record latest data
+          let deviceIndex = this.sensors.findIndex(
+            (sensor) => sensor.topic === deviceName
+          );
+          if (deviceIndex !== -1) {
+            this.sensors[deviceIndex].data = soilMoisture;
+          }
+        }
+      }
     });
   }
 
@@ -127,6 +175,19 @@ export class AgWeekComponent {
         this.temperature = data.temperature;
         this.humidity = data.humidity;
         this.timestamp = data.timestamp;
+        this.isData = true;
+      }
+    }
+    if (
+      selectedSensorIndex !== -1 &&
+      this.sensors[selectedSensorIndex].type === 'soil'
+    ) {
+      let data = this.sensors[selectedSensorIndex].data as number;
+      if (data === undefined) {
+        this.isData = false;
+      } else {
+        this.deviceName = this.sensors[selectedSensorIndex].name;
+        this.soilMoisture = data;
         this.isData = true;
       }
     }
